@@ -1,0 +1,25 @@
+name: Test build without release
+on:
+  push:
+    branches:
+      - develop
+  workflow-dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu-latest
+          - os: macos-latest
+          - os: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+      - name: Generate Makefile
+        run: qmake -makefile -o Makefile kbang.pro
+      - name: Build project
+        run: make all
